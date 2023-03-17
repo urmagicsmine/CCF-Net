@@ -1,0 +1,61 @@
+protocolVersion: 2
+name: lizihao_LIDC-Det-evaluate-acs-med-i3d-kin
+type: job
+jobRetryCount: 0
+prerequisites:
+  - name: docker_image_0
+    type: dockerimage
+    uri: harbor.deepwise.com/pai-images/pytorch1.4-py37-cu10.1
+taskRoles:
+  taskrole:
+    instances: 1
+    completion:
+      minFailedInstances: 1
+      minSucceededInstances: -1
+    taskRetryCount: 0
+    dockerImage: docker_image_0
+    resourcePerInstance:
+      #cpu: 48
+      #gpu: 8
+      memoryMB: 60000
+      cpu: 12
+      gpu: 2
+      #memoryMB: 32768
+    commands:
+      #- apt-get update -y
+      #- apt-get upgrade -y
+      #- apt-get install libsm6 -y
+      #- apt-get install libxrender1 -y
+      #- apt-get install libxext-dev -y
+      #- apt-get install libglib2.0-dev -y
+      - bash ~/init.sh
+      - apt install libgl1-mesa-glx -y
+      - export PATH=/mnt/users/anaconda3/bin:$PATH
+      - cd ~/code/LGDetection
+      #- bash install.sh
+      - python setup.py develop
+      #- bash test_mia_deeplesion.sh 18
+      #- bash test_mia_deeplesion.sh 63
+      #- bash test_mia_deeplesion.sh part
+      #- bash test_mia_deeplesion.sh r18 
+      - bash test_mia_deeplesion.sh other
+      #- bash test_mia_deeplesion.sh 18_scratch 
+      #- bash partial.sh pretrain_test
+      #- bash partial.sh scratch_test
+defaults:
+  virtualCluster: default 
+  #virtualCluster: drwise
+  #virtualCluster: titanrtx
+  #virtualCluster: titanxp
+extras:
+  com.microsoft.pai.runtimeplugin:
+    - parameters:
+        jobssh: true
+      plugin: ssh
+    - parameters:
+        storageConfigNames:
+          - DWCONFIG
+          - LUNGGENERALDATANFSCONFIG
+          - LUNGGENERALGROUPCONFIG
+      plugin: teamwise_storage
+

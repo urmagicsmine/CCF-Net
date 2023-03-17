@@ -1,0 +1,16 @@
+mmcv==0.2.14
+numpy
+Pillow==5.4.1
+matplotlib
+six
+terminaltables
+pycocotools
+torch==1.1.0
+torchvision==0.3.0
+imagecorruptions
+albumentations>=0.3.2
+opencv-python>=4.1.1
+pandas
+xlsxwriter
+sklearn
+psutil

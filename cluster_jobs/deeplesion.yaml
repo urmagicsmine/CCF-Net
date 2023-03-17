@@ -1,0 +1,65 @@
+protocolVersion: 2
+name: lizihao_Det-r18_kinetics_shortcutA
+type: job
+jobRetryCount: 0
+prerequisites:
+  - name: docker_image_0
+    type: dockerimage
+    uri: harbor.deepwise.com/pai-images/pytorch1.4-py37-cu10.1
+taskRoles:
+  taskrole:
+    instances: 1
+    completion:
+      minFailedInstances: 1
+      minSucceededInstances: -1
+    taskRetryCount: 0
+    dockerImage: docker_image_0
+    resourcePerInstance:
+      cpu: 48
+      gpu: 8
+      memoryMB: 60000
+      #cpu: 24
+      #cpu: 12
+      #gpu: 4
+      #memoryMB: 32768
+    commands:
+      #- apt-get update -y
+      #- apt-get upgrade -y
+      #- apt-get install libsm6 -y
+      #- apt-get install libxrender1 -y
+      #- apt-get install libxext-dev -y
+      #- apt-get install libglib2.0-dev -y
+      - bash ~/init.sh
+      - apt install libgl1-mesa-glx -y
+      - export PATH=/mnt/users/anaconda3/bin:$PATH
+      - cd ~/code/LGDetection
+      #- bash install.sh
+      - python setup.py develop
+      #- bash partial.sh pretrain
+      #- bash partial.sh scratch
+      #- bash mia_deeplesion.sh r18
+      #- bash mia_deeplesion.sh 18
+      #- bash mia_deeplesion.sh 63
+      #- bash mia_deeplesion.sh r18coco_deepstem
+      #- bash mia_deeplesion.sh r18coco_deepstem_zpooling
+      #- bash mia_deeplesion.sh acs
+      #- bash mia_deeplesion.sh i3d
+      - bash mia_deeplesion.sh kinetics
+      #- bash mia_deeplesion.sh medicalnet
+defaults:
+  #virtualCluster: default 
+  #virtualCluster: drwise
+  virtualCluster: titanrtx
+  #virtualCluster: titanxp
+extras:
+  com.microsoft.pai.runtimeplugin:
+    - parameters:
+        jobssh: true
+      plugin: ssh
+    - parameters:
+        storageConfigNames:
+          - DWCONFIG
+          - LUNGGENERALDATANFSCONFIG
+          - LUNGGENERALGROUPCONFIG
+      plugin: teamwise_storage
+
